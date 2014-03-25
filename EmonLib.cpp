@@ -6,6 +6,7 @@
 
 //#include "WProgram.h" un-comment for use on older versions of Arduino IDE
 #include "EmonLib.h"
+#include "SonidoPC.h"
 
 #if defined(ARDUINO) && ARDUINO >= 100
 
@@ -18,7 +19,7 @@
 #endif
 
 
-
+SonidoPC sonido;
 
 
 
@@ -62,7 +63,7 @@ void EnergyMonitor::currentTX(int _channel, double _ICAL)
 // From a sample window of the mains AC voltage and current.
 // The Sample window length is defined by the number of half wavelengths or crossings we choose to measure.
 //--------------------------------------------------------------------------------------
-void EnergyMonitor::calcVI(int crossings, int timeout)
+void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando)
 {
    #if defined emonTxV3
 	int SUPPLYVOLTAGE=3300;
@@ -92,6 +93,10 @@ void EnergyMonitor::calcVI(int crossings, int timeout)
      
      //if ((startV < 550) && (startV > 440)) st=true;  //check its within range
      if ((millis()-start)>timeout) st = true;
+     
+     if(sonando){
+      sonido.sonar();
+    } 
   }
   Serial.print(maxV);
   Serial.print(" ");
@@ -114,6 +119,10 @@ void EnergyMonitor::calcVI(int crossings, int timeout)
            st=true;  //check its within range
      }
      if ((millis()-start)>500) st = true;
+     
+     if(sonando){
+      sonido.sonar();
+    } 
   }
 
   //-------------------------------------------------------------------------------------------------------------------------
@@ -177,6 +186,10 @@ void EnergyMonitor::calcVI(int crossings, int timeout)
     if (numberOfSamples==1) lastVCross = checkVCross;                  
                      
     if (lastVCross != checkVCross) crossCount++;
+    
+    if(sonando){
+      sonido.sonar();
+    } 
   }
   Serial.print(crossCount);
   Serial.print(" ");  
