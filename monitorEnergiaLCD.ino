@@ -1,11 +1,15 @@
 
-#include "EmonLib.h"             // Include Emon Library
+#include "EmonLib.h"
 #include <LiquidCrystal.h>
 #include <LCDKeypad.h>
+#include <Wire.h>
 
 LiquidCrystal lcd(8, 13, 9, 4, 5, 6, 7);
 
+char Sensor1CharMsg[8];
+
 EnergyMonitor emon1;             // Create an instance
+boolean sonando=false;
 
 boolean inyectando=false;
 
@@ -19,6 +23,8 @@ void setup()
   
   emon1.voltage(2, 135, 0.1);  // Voltage: input pin, calibration, phase_shift
   emon1.current(1, 145);       // Current: input pin, calibration.
+
+
 }
 
 void loop()
@@ -33,14 +39,17 @@ void loop()
   float Irms            = emon1.Irms;             //extract Irms into Variable
   
   writeLCDValues(realPower,supplyVoltage);
-
-
   
   if(realPower<0){
     inyectando=true;
    }
    else sonando=false;
-
+  
+  //Enviar consumo por radiofrecuencia
+  Wire.beginTransmission(1); // transmit to device #44 (0x2c)
+  Wire.write(byte(0x00));            // sends instruction byte  
+  Wire.write((int)realPower);             // sends potentiometer value byte  
+  Wire.endTransmission();     // stop transmitting
 }
 
 void writeLCDValues(int watios,int voltios){
