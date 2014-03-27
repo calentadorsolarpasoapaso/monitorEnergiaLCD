@@ -2,7 +2,7 @@
 #include "EmonLib.h"
 #include <LiquidCrystal.h>
 #include <LCDKeypad.h>
-#include <Wire.h>
+#include <VirtualWire.h>
 
 LiquidCrystal lcd(8, 13, 9, 4, 5, 6, 7);
 
@@ -24,9 +24,10 @@ void setup()
   emon1.voltage(2, 135, 0.1);  // Voltage: input pin, calibration, phase_shift
   emon1.current(1, 145);       // Current: input pin, calibration.
 
-
+    // Initialise the IO and ISR
+    vw_set_ptt_inverted(true); // Required for DR3100
+    vw_setup(2000);	 // Bits per sec}
 }
-
 void loop()
 {
   emon1.calcVI(100,2000,sonando);         // Calculate all. No.of half wavelengths (crossings), time-out
@@ -45,11 +46,13 @@ void loop()
    }
    else sonando=false;
   
+    char msg[8]; 
+    sprintf(msg, "%f", realPower);    
   //Enviar consumo por radiofrecuencia
-  Wire.beginTransmission(1); // transmit to device #44 (0x2c)
-  Wire.write(byte(0x00));            // sends instruction byte  
-  Wire.write((int)realPower);             // sends potentiometer value byte  
-  Wire.endTransmission();     // stop transmitting
+    digitalWrite(13, true); // Flash a light to show transmitting
+    vw_send((uint8_t *)msg, strlen(msg));
+    vw_wait_tx(); // Wait until the whole message is gone
+    digitalWrite(13, false);
 }
 
 void writeLCDValues(int watios,int voltios){
@@ -58,8 +61,7 @@ void writeLCDValues(int watios,int voltios){
   
   // Limpiamos LCD
   lcd.clear();
-  
-  
+
   //Escribimos los watios en la primera fila  
   if(watios>4000 || watios < -4000){ 
     textoWatios= textoWatios + "ERROR"+ watios;
