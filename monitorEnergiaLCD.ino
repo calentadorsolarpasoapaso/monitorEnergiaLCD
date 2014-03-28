@@ -20,11 +20,13 @@ void setup()
 //Inicializamos la pantalla LCD.
   lcd.begin(16, 2);
   lcd.clear();
+  digitalWrite(13, true); // Flash a light to show transmitting
   
   emon1.voltage(2, 135, 0.1);  // Voltage: input pin, calibration, phase_shift
   emon1.current(1, 145);       // Current: input pin, calibration.
 
     // Initialise the IO and ISR
+    vw_set_tx_pin(3);
     vw_set_ptt_inverted(true); // Required for DR3100
     vw_setup(2000);	 // Bits per sec}
 }
@@ -45,14 +47,17 @@ void loop()
     inyectando=true;
    }
    else sonando=false;
-  
-    char msg[8]; 
-    sprintf(msg, "%f", realPower);    
+
+    String textomsg=String((int)realPower); 
+    textomsg+= " ";
+    textomsg+=millis(); 
+    const char *msg=textomsg.c_str();
+    Serial.println(textomsg);
   //Enviar consumo por radiofrecuencia
-    digitalWrite(13, true); // Flash a light to show transmitting
+    //digitalWrite(13, true); // Flash a light to show transmitting
     vw_send((uint8_t *)msg, strlen(msg));
     vw_wait_tx(); // Wait until the whole message is gone
-    digitalWrite(13, false);
+    //digitalWrite(13, false);
 }
 
 void writeLCDValues(int watios,int voltios){

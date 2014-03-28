@@ -98,24 +98,25 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando)
       sonido.sonar();
     } 
   }
+  /*
   Serial.print(maxV);
   Serial.print(" ");
   Serial.print(minV);
   Serial.print(" ");
   Serial.println(startV);
+  */
   //Buscamos el punto medio
   unsigned long medio=(maxV-minV)/2;
-  Serial.print("Medio ");
-  Serial.println(medio);
+
   st=false;
   start = millis();
   while(st==false)                                   //the while loop...
   {
      startV = analogRead(inPinV);     //using the voltage waveform
         //Serial.print("ValorV ");
-         Serial.println(startV);
+         //Serial.println(startV);
          if ((startV > (medio - 50)) && (startV < (medio + 50))){
-           Serial.println("Encontrado");
+           //Serial.println("Encontrado");
            st=true;  //check its within range
      }
      if ((millis()-start)>500) st = true;
@@ -191,9 +192,9 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando)
       sonido.sonar();
     } 
   }
-  Serial.print(crossCount);
-  Serial.print(" ");  
-  Serial.println(numberOfSamples);
+//  Serial.print(crossCount);
+//  Serial.print(" ");  
+//  Serial.println(numberOfSamples);
  
   //-------------------------------------------------------------------------------------------------------------------------
   // 3) Post loop calculations
@@ -217,11 +218,12 @@ double V_RATIO = VCAL *((SUPPLYVOLTAGE/1000.0) / 1023.0);
 
 
 //Output to serial
-Serial.print(realPower);
+/*Serial.print(realPower);
 Serial.print(' ');
 Serial.print(apparentPower);
 Serial.print(' ');
 Serial.print(powerFactor);
+
 String t=" RMS: ";
 Serial.print(t);
 Serial.print(Vrms);
@@ -231,7 +233,7 @@ Serial.print(' ');
 Serial.print(V_RATIO);
 Serial.print(' ');
 Serial.println(I_RATIO);
-
+*/
   //Reset accumulators
   sumV = 0;
   sumI = 0;
@@ -275,7 +277,7 @@ double EnergyMonitor::calcIrms(int NUMBER_OF_SAMPLES)
 }
 
 void EnergyMonitor::serialprint()
-{
+{/*
     Serial.print(realPower);
     Serial.print(' ');
     Serial.print(apparentPower);
@@ -287,6 +289,7 @@ void EnergyMonitor::serialprint()
     Serial.print(powerFactor);
     Serial.println(' ');
     delay(100); 
+    */
 }
 
 //thanks to http://hacking.majenko.co.uk/making-accurate-adc-readings-on-arduino

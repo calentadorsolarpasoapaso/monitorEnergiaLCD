@@ -44,7 +44,7 @@ void SonidoPC::cambiar(){
      // ledStateSonidoPC2= HIGH;
 
     }
-    Serial.println(ledStateSonidoPC);
+//    Serial.println(ledStateSonidoPC);
     // set the LED with the ledStateSonidoPC of the variable:
     digitalWrite(LedPinSonidoPC, ledStateSonidoPC);
 
