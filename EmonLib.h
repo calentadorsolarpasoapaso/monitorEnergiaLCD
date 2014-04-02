@@ -39,6 +39,8 @@ class EnergyMonitor
        Vrms,
        Irms;
 
+    void setPinPWMSonido(int PIN_SONIDO);
+
   private:
 
     //Set Voltage and current input pins

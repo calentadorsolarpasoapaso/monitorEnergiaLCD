@@ -12,7 +12,7 @@
 
 // set pin numbers:
 // PIN 3 y 2
-const int LedPinSonidoPC =  3;      // the number of the LED pin
+int  LedPinSonidoPC =  5;      // the number of the LED pin
 //const int LedPinSonidoPC2 =  2;      // the number of the LED pin
 
 // Variables will change:
@@ -23,34 +23,37 @@ long previousMillisSonidoPC = 0;        // will store last time LED was updated
 // the follow variables is a long because the time, measured in miliseconds,
 // will quickly become a bigger number than can be stored in an int.
 long intervalSonidoPC = 50;           // interval at which to blink (milliseconds)
+int VALOR_SONIDO=40;
 
 SonidoPC::SonidoPC() {
   // set the digital pin as output:
   // set the digital pin as output:
   pinMode(LedPinSonidoPC, OUTPUT);      
  // pinMode(LedPinSonidoPC2, OUTPUT); 
-  digitalWrite(LedPinSonidoPC,HIGH);
+  analogWrite(LedPinSonidoPC,VALOR_SONIDO);
   //digitalWrite(LedPinSonidoPC2,LOW); 
+}
+
+void SonidoPC::setPinPWMSonido(int pinPWM){
+  LedPinSonidoPC=pinPWM;
 }
 
 void SonidoPC::cambiar(){
     // if the LED is off turn it on and vice-versa:
     if (ledStateSonidoPC == LOW){
-      ledStateSonidoPC = HIGH;
-   //   ledStateSonidoPC2= LOW;
+      ledStateSonidoPC = VALOR_SONIDO;
     }
     else{
       ledStateSonidoPC = LOW;
-     // ledStateSonidoPC2= HIGH;
 
     }
 //    Serial.println(ledStateSonidoPC);
     // set the LED with the ledStateSonidoPC of the variable:
-    digitalWrite(LedPinSonidoPC, ledStateSonidoPC);
+    analogWrite(LedPinSonidoPC, ledStateSonidoPC);
 
 }
 void SonidoPC::silencio(){
-  digitalWrite(LedPinSonidoPC,LOW);
+  analogWrite(LedPinSonidoPC,LOW);
   //digitalWrite(LedPinSonidoPC2,LOW); 
 }
 void SonidoPC::sonar()

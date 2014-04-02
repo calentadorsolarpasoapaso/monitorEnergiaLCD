@@ -11,5 +11,7 @@ class SonidoPC
  void sonar();
  void silencio(); 
  void cambiar();
+ void setPinPWMSonido(int pinPWM);
+
  };
 #endif

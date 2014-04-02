@@ -57,6 +57,10 @@ void EnergyMonitor::currentTX(int _channel, double _ICAL)
    ICAL = _ICAL;
 }
 
+  void EnergyMonitor::setPinPWMSonido(int PIN_SONIDO){
+      sonido.setPinPWMSonido(PIN_SONIDO);
+  }
+
 //--------------------------------------------------------------------------------------
 // emon_calc procedure
 // Calculates realPower,apparentPower,powerFactor,Vrms,Irms,kwh increment
