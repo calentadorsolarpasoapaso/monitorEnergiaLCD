@@ -10,15 +10,16 @@
 LiquidCrystal lcd(8, 13, 9, 4, 5, 6, 7);
 */
 //Addr: 0x3F, 20 chars & 4 lines
+//Arduino NANO pines A4 y A5
 LiquidCrystal_I2C lcd(0x27,20,4); 
-
 
 char Sensor1CharMsg[8];
 
 EnergyMonitor emon1;             // Create an instance
-boolean sonando=false;
 const uint8_t PIN_RADIO_FRECUENCIA=11;
-const uint8_t PIN_SONIDO=5;
+
+//Posición A6 del rango
+const uint8_t PIN_SONIDO=6;
 
 boolean inyectando=false;
 
@@ -28,12 +29,19 @@ void setup()
 
 //Inicializamos la pantalla LCD.
   lcd.begin(20, 4);
-    lcd.init(); 
-    lcd.backlight();
+  lcd.init(); 
+  lcd.backlight();
   lcd.clear();
   digitalWrite(13, true); // Flash a light to show transmitting
+
+  lcd.setCursor(0,3);
+//  lcd.print("ANA TE QUIERO");
+  lcd.print("calentadorsolarpasoapaso.blogspot.com");
   
-  emon1.voltage(2, 135, 0.1);  // Voltage: input pin, calibration, phase_shift
+//  emon1.voltage(2, 135, 0.1);  // Voltage: input pin, calibration, phase_shift
+          //135->215
+          //145->231
+  emon1.voltage(2, 144, 0.1);  // Voltage: input pin, calibration, phase_shift
   emon1.current(1, 145);       // Current: input pin, calibration.
   
   emon1.setPinPWMSonido(PIN_SONIDO);
@@ -45,20 +53,23 @@ void setup()
 }
 void loop()
 {
-  emon1.calcVI(100,2000,sonando);         // Calculate all. No.of half wavelengths (crossings), time-out
+  emon1.calcVI(100,2000,inyectando);         // Calculate all. No.of half wavelengths (crossings), time-out
   
   float realPower       = emon1.realPower;        //extract Real Power into variable
   float apparentPower   = emon1.apparentPower;    //extract Apparent Power into variable
   float powerFActor     = emon1.powerFactor;      //extract Power Factor into Variable
   float supplyVoltage   = emon1.Vrms;             //extract Vrms into Variable
   float Irms            = emon1.Irms;             //extract Irms into Variable
+
+//  realPower=-2;  
   
   writeLCDValues(realPower,supplyVoltage);
-  
+
+  //TEST FUERZO REAL POWER
   if(realPower<0){
     inyectando=true;
    }
-   else sonando=false;
+   else inyectando=false;
 
     String textomsg=String((int)realPower); 
     textomsg+= " ";
@@ -88,7 +99,7 @@ void writeLCDValues(int watios,int voltios){
   else{
       textoWatios= textoWatios + watios + "       ";
   }
-  
+  lcd.setCursor(0,0);
   lcd.print(textoWatios);
 
   //Escribimos los voltios en la segunda fila
@@ -101,7 +112,7 @@ void writeLCDValues(int watios,int voltios){
   }
   lcd.print(textoVoltios);
   
-  lcd.setCursor(0,1);
+  lcd.setCursor(0,2);
   if(watios<0) {
     lcd.print(textoInyectando);
   }

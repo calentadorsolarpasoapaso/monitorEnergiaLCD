@@ -16,44 +16,54 @@ int  LedPinSonidoPC =  5;      // the number of the LED pin
 //const int LedPinSonidoPC2 =  2;      // the number of the LED pin
 
 // Variables will change:
-int ledStateSonidoPC = LOW;             // ledStateSonidoPC used to set the LED
+int ledStateSonidoPC = 0;             // ledStateSonidoPC used to set the LED
 //int ledStateSonidoPC2 = HIGH;             // ledStateSonidoPC used to set the LED
 long previousMillisSonidoPC = 0;        // will store last time LED was updated
+boolean subiendo=true;
+
 
 // the follow variables is a long because the time, measured in miliseconds,
 // will quickly become a bigger number than can be stored in an int.
-long intervalSonidoPC = 50;           // interval at which to blink (milliseconds)
-int VALOR_SONIDO=40;
+long intervalSonidoPC = 200;           // interval at which to blink (milliseconds)
+int INCREMENTO=40; //Incremento
 
 SonidoPC::SonidoPC() {
   // set the digital pin as output:
   // set the digital pin as output:
   pinMode(LedPinSonidoPC, OUTPUT);      
  // pinMode(LedPinSonidoPC2, OUTPUT); 
-  analogWrite(LedPinSonidoPC,VALOR_SONIDO);
+  analogWrite(LedPinSonidoPC,INCREMENTO);
   //digitalWrite(LedPinSonidoPC2,LOW); 
+  subiendo=true;
 }
 
 void SonidoPC::setPinPWMSonido(int pinPWM){
   LedPinSonidoPC=pinPWM;
+  pinMode(LedPinSonidoPC, OUTPUT);      
 }
 
 void SonidoPC::cambiar(){
     // if the LED is off turn it on and vice-versa:
-    if (ledStateSonidoPC == LOW){
-      ledStateSonidoPC = VALOR_SONIDO;
+    if (subiendo){
+      ledStateSonidoPC += INCREMENTO;
     }
     else{
-      ledStateSonidoPC = LOW;
-
+      ledStateSonidoPC -= INCREMENTO;
     }
+    if(ledStateSonidoPC>(255-INCREMENTO)) subiendo=false;
+    //Con pausa en el sonido para no resultar muy cansino
+    if(ledStateSonidoPC<(-(INCREMENTO*3))) subiendo=true;
+
+    int valorPWM=ledStateSonidoPC;
+    if(valorPWM<0) valorPWM=0;
 //    Serial.println(ledStateSonidoPC);
     // set the LED with the ledStateSonidoPC of the variable:
-    analogWrite(LedPinSonidoPC, ledStateSonidoPC);
+    analogWrite(LedPinSonidoPC, valorPWM);
+    
 
 }
 void SonidoPC::silencio(){
-  analogWrite(LedPinSonidoPC,LOW);
+  analogWrite(LedPinSonidoPC,0);
   //digitalWrite(LedPinSonidoPC2,LOW); 
 }
 void SonidoPC::sonar()

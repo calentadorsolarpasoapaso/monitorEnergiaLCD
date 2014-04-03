@@ -101,6 +101,7 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando)
      if(sonando){
       sonido.sonar();
     } 
+    else sonido.silencio();
   }
   /*
   Serial.print(maxV);
@@ -128,6 +129,7 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando)
      if(sonando){
       sonido.sonar();
     } 
+    else sonido.silencio();
   }
 
   //-------------------------------------------------------------------------------------------------------------------------
@@ -195,6 +197,7 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando)
     if(sonando){
       sonido.sonar();
     } 
+    else sonido.silencio();
   }
 //  Serial.print(crossCount);
 //  Serial.print(" ");  
