@@ -1,4 +1,11 @@
 
+
+/*
+  monitorEnergiaLCD.cpp - Library for www.calentadorsolarpasoapaso.blogspot.com
+  Created by José Miguel Jiménez Villanueva, March 2014
+  GNU GPL
+*/
+
 #include "EmonLib.h"
 #include "estadisticas.h"
 #include <LiquidCrystal.h>
@@ -7,16 +14,16 @@
 #include <VirtualWire.h> 
 #include <LiquidCrystal_I2C.h>
 
-/* Antigua pantalla
+/* Antigua pantalla LCD no I2C
 LiquidCrystal lcd(8, 13, 9, 4, 5, 6, 7);
 */
 //Addr: 0x3F, 20 chars & 4 lines
-//Arduino NANO pines A4 y A5
+//Arduino NANO pines A4 y A5 I2C
 LiquidCrystal_I2C lcd(0x27,20,4); 
 
-char Sensor1CharMsg[8];
+EnergyMonitor emon1; // Instancia de objeto que lee los valores
 
-EnergyMonitor emon1;             // Create an instance
+//Objeto para guardar estadísticas
 Estadisticas stats;
 
 const uint8_t PIN_RADIO_FRECUENCIA=11;
@@ -24,37 +31,42 @@ const uint8_t PIN_RADIO_FRECUENCIA=11;
 //Posición A6 del rango
 const uint8_t PIN_SONIDO=6;
 
+const uint8_t PIN_VOLTAJE=2;
+const uint8_t PIN_INTENSIDAD=1;
+
+
 boolean inyectando=false;
 boolean errorVoltaje=false;
+long milisTimeoutLCD=0;
 
 void setup()
 {  
   Serial.begin(9600);
 
 //Inicializamos la pantalla LCD.
-  lcd.begin(20, 4);
-  lcd.init(); 
-  lcd.backlight();
-  lcd.clear();
-  digitalWrite(13, true); // Flash a light to show transmitting
+  inicializarLCD();  
+
+//  digitalWrite(13, true); // Flash a light to show transmitting
 
   lcd.setCursor(0,3);
-  lcd.print("Blocalentadorsolarpasoapaso");
+  lcd.print("calentadorsolarpasoa");
   
 //  emon1.voltage(2, 135, 0.1);  // Voltage: input pin, calibration, phase_shift
+  emon1.voltage(2, 144, 1.7);  // Voltage: input pin, calibration, phase_shift
           //135->215
           //145->231
-  emon1.voltage(2, 144, 0.1);  // Voltage: input pin, calibration, phase_shift
-  emon1.current(1, 145);       // Current: input pin, calibration.
-  
+//  emon1.voltage(PIN_VOLTAJE, 145, 0.30);  // Voltage: input pin, calibration, phase_shift 0.30 BUENO
+    emon1.current(1, 145);       // valor original, ajustar con sonda sin conectar a nada.. 135 cuenta -40w aprox 140 -15 aprox
+//    emon1.current(PIN_INTENSIDAD, 200);       // Current: input pin, calibration. 149 APROX
   emon1.setPinPWMSonido(PIN_SONIDO);
 
+  //Inicializamos las estadísticas a cero
   stats.reset();
   
     // Initialise the IO and ISR
-    vw_set_tx_pin(PIN_RADIO_FRECUENCIA);
-    vw_set_ptt_inverted(true); // Required for DR3100
-    vw_setup(2000);	 // Bits per sec}
+  vw_set_tx_pin(PIN_RADIO_FRECUENCIA);
+  vw_set_ptt_inverted(true); // Required for DR3100
+  vw_setup(2000);	 // Bits per sec}
 }
 void loop()
 {
@@ -69,36 +81,38 @@ void loop()
   float Irms            = emon1.Irms;             //extract Irms into Variable
 
 //  realPower=-2;  
-
+  //Margen de watios para que no suene por la noche
+  realPower+=60;
   Serial.println(supplyVoltage);
   Serial.println(realPower);
   
   //Si no nos llega voltaje, o es muy grande, alerta, el sistema no funciona
   errorVoltaje=hayErrorVoltaje(supplyVoltage);
   
-  writeLCDValues(realPower,supplyVoltage);
+  mostrarInformacionLCD(realPower,supplyVoltage);
 
 
   //TEST FUERZO REAL POWER
   if(realPower<0){
+    
+    encenderLCD();
+    
     inyectando=true;
+    
+    //Añadimos a las estadisticas el tiempo que ha estado inyectand
     stats.sumaWatsHora((millis()-msCalculo)/1000,realPower);
    }
-   else inyectando=false;
-  
-    String textomsg=String((int)realPower); 
-    textomsg+= " ";
-    textomsg+=millis(); 
-    const char *msg=textomsg.c_str();
-    Serial.println(textomsg);
-  //Enviar consumo por radiofrecuencia
-    //digitalWrite(13, tru e); // Flash a light to show transmitting
-    vw_send((uint8_t *)msg, strlen(msg));
-    vw_wait_tx(); // Wait until the whole message is gone
-    //digitalWrite(13, false);
+   else{
+     //Apagamos LCD
+     //apagarLCD();
+     
+     inyectando=false;
+   }
+
+   enviarMensajeRadioFrecuencia(realPower);  
 }
 
-void writeLCDValues(int watios,int voltios){
+void mostrarInformacionLCD(int watios,int voltios){
   String textoWatios="Wats: ";
   String textoVoltios="V";
   String textoInyectando="!ALERTA! INYECTANDO";
@@ -143,6 +157,46 @@ void writeLCDValues(int watios,int voltios){
   }
 }
 
+void encenderLCD(){
+    lcd.backlight();
+    milisTimeoutLCD=millis();
+}
+
+void apagarLCD(){
+  //un minuto de momento
+  const int minutos=1;
+  
+  if((millis()-milisTimeoutLCD)>(minutos*60*1000)){
+    lcd.noBacklight();
+  }
+}
+
+void inicializarLCD(){
+  lcd.begin(20, 4);
+  lcd.init(); 
+  lcd.backlight();
+  lcd.clear();
+  
+  //Timeout para el LCD
+  milisTimeoutLCD=millis();
+}
+
+void enviarMensajeRadioFrecuencia(int realPower){
+
+  //  digitalWrite(13, true); // Flash a light to show transmitting
+
+    String textomsg=String((int)realPower); 
+    textomsg+= " ";
+    textomsg+=millis(); 
+    const char *msg=textomsg.c_str();
+    Serial.println(textomsg);
+  //Enviar consumo por radiofrecuencia
+    //digitalWrite(13, tru e); // Flash a light to show transmitting
+    vw_send((uint8_t *)msg, strlen(msg));
+    vw_wait_tx(); // Wait until the whole message is gone
+    //digitalWrite(13, false);
+
+}
 
 boolean hayErrorVoltaje(int supplyVoltage){
 
