@@ -56,7 +56,7 @@ void setup()
           //135->215
           //145->231
 //  emon1.voltage(PIN_VOLTAJE, 145, 0.30);  // Voltage: input pin, calibration, phase_shift 0.30 BUENO
-    emon1.current(1, 145);       // valor original, ajustar con sonda sin conectar a nada.. 135 cuenta -40w aprox 140 -15 aprox
+    emon1.current(1, 145);       // valor original, ajustar con sonda sin conectar a nada.. 135 cuenta -40w aprox 140 -15 aprox 145 voltaje
 //    emon1.current(PIN_INTENSIDAD, 200);       // Current: input pin, calibration. 149 APROX
   emon1.setPinPWMSonido(PIN_SONIDO);
 
@@ -183,7 +183,7 @@ void inicializarLCD(){
 
 void enviarMensajeRadioFrecuencia(int realPower){
 
-  //  digitalWrite(13, true); // Flash a light to show transmitting
+    digitalWrite(13, true); // Flash a light to show transmitting
 
     String textomsg=String((int)realPower); 
     textomsg+= " ";
