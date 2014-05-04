@@ -189,11 +189,9 @@ void enviarMensajeRadioFrecuencia(int realPower){
     //textomsg+=millis(); //No envio milis porque satura el buffer. Buffer máximo de 30
     const char *msg=textomsg.c_str();
     Serial.println(textomsg);
-    for(int i=0;i<3;i++){
     //Enviar consumo por radiofrecuencia
       vw_send((uint8_t *)msg, strlen(msg));
       vw_wait_tx(); // Wait until the whole message is gone
-    }
     digitalWrite(13, false);
 }
 
