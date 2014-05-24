@@ -97,7 +97,12 @@ void loop()
     
     encenderLCD();
     
-    inyectando=true;
+    if(tInyectando>0){
+      if((millis()-tInyectando)>30000){
+        inyectando=true;
+      }
+    }
+    else tInyectando=millis();
     
     //Añadimos a las estadisticas el tiempo que ha estado inyectand
     stats.sumaWatsHora((millis()-msCalculo)/1000,realPower);
@@ -107,6 +112,7 @@ void loop()
      //apagarLCD();
      
      inyectando=false;
+     tInyectando=0;
    }
 
    enviarMensajeRadioFrecuencia(realPower);  
