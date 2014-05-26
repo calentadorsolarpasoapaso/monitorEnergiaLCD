@@ -34,7 +34,7 @@ const uint8_t PIN_SONIDO=6;
 const uint8_t PIN_VOLTAJE=2;
 const uint8_t PIN_INTENSIDAD=1;
 
-
+long tInyectando=0;
 boolean inyectando=false;
 boolean errorVoltaje=false;
 long milisTimeoutLCD=0;
@@ -72,7 +72,7 @@ void loop()
 {
   long msCalculo=millis();
   //Sonará la alarma si hay inyección o error en voltaje
-  emon1.calcVI(100,2000,inyectando||errorVoltaje);         // Calculate all. No.of half wavelengths (crossings), time-out
+  emon1.calcVI(100,500,inyectando||errorVoltaje);         // Calculate all. No.of half wavelengths (crossings), time-out
   
   float realPower       = emon1.realPower;        //extract Real Power into variable
   float apparentPower   = emon1.apparentPower;    //extract Apparent Power into variable
