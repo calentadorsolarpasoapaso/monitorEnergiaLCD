@@ -52,11 +52,22 @@ void setup()
   lcd.print("calentadorsolarpasoa");
   
 //  emon1.voltage(2, 135, 0.1);  // Voltage: input pin, calibration, phase_shift
-  emon1.voltage(2, 144, 1.7);  // Voltage: input pin, calibration, phase_shift
+// ORIGINAL  emon1.voltage(2, 144, 1.7);  // Voltage: input pin, calibration, phase_shift
+  emon1.voltage(2, 145, 1.7);  // Voltage: input pin, calibration, phase_shift
           //135->215
           //145->231
 //  emon1.voltage(PIN_VOLTAJE, 145, 0.30);  // Voltage: input pin, calibration, phase_shift 0.30 BUENO
-    emon1.current(1, 145);       // valor original, ajustar con sonda sin conectar a nada.. 135 cuenta -40w aprox 140 -15 aprox 145 voltaje
+//ORIGINAL    emon1.current(1, 145);       // valor original, ajustar con sonda sin conectar a nada.. 135 cuenta -40w aprox 140 -15 aprox 145 voltaje
+//114 da un buen valor de lectura.
+//115 da -64
+//116 da -45
+//118 -6
+//117.5 da -50
+//117.9 -53
+//118.1 -28
+//118.5 -7  y 1300
+//120 -7 y 1300 De mas
+    emon1.current(1, 118.2);       // valor original, ajustar con sonda sin conectar a nada.. 135 cuenta -40w aprox 140 -15 aprox 145 voltaje
 //    emon1.current(PIN_INTENSIDAD, 200);       // Current: input pin, calibration. 149 APROX
   emon1.setPinPWMSonido(PIN_SONIDO);
 
@@ -82,7 +93,7 @@ void loop()
 
 //  realPower=-2;  
   //Margen de watios para que no suene por la noche
-  realPower+=60;
+  realPower+=30;
   Serial.println(supplyVoltage);
   Serial.println(realPower);
   
