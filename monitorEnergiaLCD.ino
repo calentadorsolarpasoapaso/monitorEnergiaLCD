@@ -53,6 +53,7 @@ void setup()
   
 //  emon1.voltage(2, 135, 0.1);  // Voltage: input pin, calibration, phase_shift
 // ORIGINAL  emon1.voltage(2, 144, 1.7);  // Voltage: input pin, calibration, phase_shift
+//  emon1.voltage(2, 145, 1.7);  // Voltage: input pin, calibration, phase_shift
   emon1.voltage(2, 145, 1.7);  // Voltage: input pin, calibration, phase_shift
           //135->215
           //145->231
@@ -67,7 +68,7 @@ void setup()
 //118.1 -28
 //118.5 -7  y 1300
 //120 -7 y 1300 De mas
-    emon1.current(1, 118.2);       // valor original, ajustar con sonda sin conectar a nada.. 135 cuenta -40w aprox 140 -15 aprox 145 voltaje
+    emon1.current(1, 118.1);       // valor original, ajustar con sonda sin conectar a nada.. 135 cuenta -40w aprox 140 -15 aprox 145 voltaje
 //    emon1.current(PIN_INTENSIDAD, 200);       // Current: input pin, calibration. 149 APROX
   emon1.setPinPWMSonido(PIN_SONIDO);
 
@@ -83,7 +84,7 @@ void loop()
 {
   long msCalculo=millis();
   //Sonará la alarma si hay inyección o error en voltaje
-  emon1.calcVI(100,500,inyectando||errorVoltaje);         // Calculate all. No.of half wavelengths (crossings), time-out
+  emon1.calcVI(100,500,inyectando||errorVoltaje,4250);         // Calculate all. No.of half wavelengths (crossings), time-out
   
   float realPower       = emon1.realPower;        //extract Real Power into variable
   float apparentPower   = emon1.apparentPower;    //extract Apparent Power into variable
@@ -91,9 +92,11 @@ void loop()
   float supplyVoltage   = emon1.Vrms;             //extract Vrms into Variable
   float Irms            = emon1.Irms;             //extract Irms into Variable
 
+Serial.println(powerFActor);
+
 //  realPower=-2;  
   //Margen de watios para que no suene por la noche
-  realPower+=30;
+  realPower+=100;
   Serial.println(supplyVoltage);
   Serial.println(realPower);
   
