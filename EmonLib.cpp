@@ -80,8 +80,13 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando){
 void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando,int SUPPLYVOLTAGE)
 {
   
+<<<<<<< HEAD
 // Serial.println("SUPPLYVOLTAGE");
 // Serial.println(SUPPLYVOLTAGE);
+=======
+ Serial.println("SUPPLYVOLTAGE");
+ Serial.println(SUPPLYVOLTAGE);
+>>>>>>> 03bc57e4c7f52f2dbe6b5050ba7429985b19c15b
 
   int crossCount = 0;                             //Used to measure number of times threshold is crossed.
   int numberOfSamples = 0;                        //This is now incremented  
@@ -95,7 +100,11 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando,int SUPPLY
   
   unsigned long maxV=0;
   unsigned long minV=1024;
+<<<<<<< HEAD
 
+=======
+  /*
+>>>>>>> 03bc57e4c7f52f2dbe6b5050ba7429985b19c15b
   while(st==false)                                   //the while loop...
   {
      startV = analogRead(inPinV);     //using the voltage waveform
@@ -110,7 +119,19 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando,int SUPPLY
     } 
     else sonido.silencio();
   }
+<<<<<<< HEAD
+=======
+  */
+  /*
+  Serial.print(maxV);
+  Serial.print(" ");
+  Serial.print(minV);
+  Serial.print(" ");
+  Serial.println(startV);
+  */
+>>>>>>> 03bc57e4c7f52f2dbe6b5050ba7429985b19c15b
   //Buscamos el punto medio
+  /*
   unsigned long medio=(maxV-minV)/2;
 
   st=false;
@@ -120,7 +141,11 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando,int SUPPLY
      startV = analogRead(inPinV);     //using the voltage waveform
         //Serial.print("ValorV ");
          //Serial.println(startV);
+<<<<<<< HEAD
        if ((startV > (medio - 50)) && (startV < (medio + 50))){
+=======
+       if ((startV > (medio - 10)) && (startV < (medio + 10))){
+>>>>>>> 03bc57e4c7f52f2dbe6b5050ba7429985b19c15b
          //Serial.println("Encontrado");
          st=true;  //check its within range
        }
@@ -131,7 +156,7 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando,int SUPPLY
        } 
        else sonido.silencio();
   }
-
+*/
   //-------------------------------------------------------------------------------------------------------------------------
   // 2) Main measurment loop
   //------------------------------------------------------------------------------------------------------------------------- 
@@ -152,6 +177,7 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando,int SUPPLY
     //-----------------------------------------------------------------------------
     sampleV = analogRead(inPinV);                 //Read in raw voltage signal
     sampleI = analogRead(inPinI);                 //Read in raw current signal
+<<<<<<< HEAD
 /*    
     Serial.print(millis());
     Serial.print("\t");
@@ -160,6 +186,10 @@ void EnergyMonitor::calcVI(int crossings, int timeout,boolean sonando,int SUPPLY
     Serial.print(sampleI);
     Serial.println("");
   */  
+=======
+
+
+>>>>>>> 03bc57e4c7f52f2dbe6b5050ba7429985b19c15b
     //-----------------------------------------------------------------------------
     // B) Apply digital high pass filters to remove 2.5V DC offset (centered on 0V).
     //-----------------------------------------------------------------------------

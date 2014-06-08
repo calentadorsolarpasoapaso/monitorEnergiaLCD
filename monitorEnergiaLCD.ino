@@ -92,6 +92,7 @@ void loop()
   float supplyVoltage   = emon1.Vrms;             //extract Vrms into Variable
   float Irms            = emon1.Irms;             //extract Irms into Variable
 
+<<<<<<< HEAD
 //Serial.println(powerFActor);
 
 //  realPower=-2;  
@@ -99,6 +100,15 @@ void loop()
   //realPower+=180;
 //  Serial.println(supplyVoltage);
 //  Serial.println(realPower);
+=======
+Serial.println(powerFActor);
+
+//  realPower=-2;  
+  //Margen de watios para que no suene por la noche
+  realPower+=100;
+  Serial.println(supplyVoltage);
+  Serial.println(realPower);
+>>>>>>> 03bc57e4c7f52f2dbe6b5050ba7429985b19c15b
   
   //Si no nos llega voltaje, o es muy grande, alerta, el sistema no funciona
   errorVoltaje=hayErrorVoltaje(supplyVoltage);
