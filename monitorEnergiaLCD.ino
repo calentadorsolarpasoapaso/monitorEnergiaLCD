@@ -93,7 +93,7 @@ void loop()
 
 //  realPower=-2;  
   //Margen de watios para que no suene por la noche
-  realPower+=80;
+  realPower+=60;
   Serial.println(supplyVoltage);
   Serial.println(realPower);
   
@@ -102,7 +102,7 @@ void loop()
   
   mostrarInformacionLCD(realPower,supplyVoltage);
 
-
+  long msLectura=(millis()-msCalculo);
   //TEST FUERZO REAL POWER
   if(realPower<0){
     
@@ -115,12 +115,15 @@ void loop()
     }
     else tInyectando=millis();
     
-    //Añadimos a las estadisticas el tiempo que ha estado inyectand
-    stats.sumaWatsHora((millis()-msCalculo)/1000,realPower);
+    //Añadimos a las estadisticas el tiempo que ha estado inyectando
+    stats.sumaWatsHoraExportacion(msLectura,realPower);
    }
    else{
      //Apagamos LCD
      //apagarLCD();
+
+    //Añadimos a las estadisticas el tiempo que ha estado inyectando
+    stats.sumaWatsHoraImportacion(msLectura,realPower);
      
      inyectando=false;
      tInyectando=0;
@@ -169,9 +172,15 @@ void mostrarInformacionLCD(int watios,int voltios){
   }
   else {
     lcd.print(textoLimpio);
-    lcd.setCursor(0,1);
-    lcd.print(stats.getWatHoraInyectados());
   }
+  //Print exported Wats
+  lcd.setCursor(0,1);
+  lcd.print(stats.getWatHoraExportados());
+
+  //Print imported Wats
+  lcd.setCursor(0,2);
+  lcd.print(stats.getWatHoraImportados());
+  
 }
 
 void encenderLCD(){

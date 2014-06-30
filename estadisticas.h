@@ -22,13 +22,19 @@ class Estadisticas
   public:
 
     void reset();
-    void sumaWatsHora(int ms, int valorWatt);
+    void sumaWatsHoraExportacion(long msExportacion, int valorWatt);
+    void sumaWatsHoraImportacion(long msImportacion, int valorWatt);
 //    void setHoraInyeccion(int _inPinI, double _ICAL);
-    String getWatHoraInyectados();
+    String getWatHoraExportados();
+    String getWatHoraImportados();
     
   private:
-    long watsHora;
-    long segundosAcumulado;
+    long watsHoraImportacion;
+    long watsHoraExportacion;
+    long msAcumuladoImportacion;
+    long msAcumuladoExportacion;
+    
+    float calcularConsumo(long ms, int watt);
 
 };
 
