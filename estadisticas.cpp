@@ -19,17 +19,20 @@
 
 
 void Estadisticas::reset(){
-  watsHoraExportacion=0;
-  msAcumuladoExportacion=0;
-  watsHoraImportacion=0;
-  msAcumuladoImportacion=0;
+  watsHoraExportacion=0.00000;
+  watsHoraImportacion=0.00000;
+  watsHoraImportacionAyer=0.000;
+  horasAcumuladoExportacion=0.00;
+  horasAcumuladoImportacion=0.00;
+  
+  msInicioReset=millis();
 }
 
 //Suma los watios acumulados en los segundos del parámetro. w/ms
 void Estadisticas::sumaWatsHoraExportacion(long msExportacion, int watt)
 {
   watsHoraExportacion += calcularConsumo(msExportacion,watt);
-  msAcumuladoExportacion += msExportacion;
+  horasAcumuladoExportacion += msExportacion/(3600000.0);
 }
 
 
@@ -41,15 +44,21 @@ void Estadisticas::sumaWatsHoraExportacion(long msExportacion, int watt)
 */
 
 float Estadisticas::calcularConsumo(long ms, int watt){
-    float watiosParcial=0;
-    watiosParcial=((watt*ms)/(60*60*1000));
+    float watiosParcial=0.0;
+    watiosParcial=((watt*ms)/(3600000.0));
     return watiosParcial;    
 }
 
 void Estadisticas::sumaWatsHoraImportacion(long msImportacion, int watt)
 {
-  watsHoraImportacion+=calcularConsumo(msImportacion,watt);
-  msAcumuladoImportacion+=msImportacion;
+  watsHoraImportacion =calcularConsumo(msImportacion,watt) + watsHoraImportacion;
+  horasAcumuladoImportacion+= (msImportacion/(3600000.0));
+  
+  //Si los milisegundos iniciales del sistema son >24h, reseteamos
+  if((millis()-msInicioReset)>86400000){
+    watsHoraImportacionAyer=watsHoraImportacion;
+    msInicioReset=millis();
+  }
 }
 
 //Para sacar el valor en wat/hora tenemos que multiplicar 
@@ -57,39 +66,49 @@ void Estadisticas::sumaWatsHoraImportacion(long msImportacion, int watt)
 //si tenemos por ejemplo 
 //0,04166666666 en 500 ms tendremos que: 0,04166666666*500
 String Estadisticas::getWatHoraExportados(){
-  String texto="EXP: ";
+  String texto="E: ";
   char buffer[20];
-  float tiempoHoras=msAcumuladoExportacion/(1000*60*60); //Horas que se ha exportado
+  float tiempoHoras=horasAcumuladoExportacion; //Horas que se ha exportado
   float wattHoras=watsHoraExportacion;
 
-  dtostrf(wattHoras, 5, 2, buffer);
+  dtostrf(wattHoras, 6, 2, buffer);
 
   texto+=buffer;
   texto+=" ";
 
-  dtostrf(tiempoHoras, 4, 1, buffer);
+  dtostrf(tiempoHoras, 2, 3, buffer);
 
   texto+=buffer;
-  texto+=" H";
+  texto+="H";
   return texto;
 }
 
 String Estadisticas::getWatHoraImportados(){
-  String texto="IMP: ";
+  String texto="I: ";
   char buffer[20];
 
-  float tiempoHoras=msAcumuladoImportacion/(1000*60*60);
+  float tiempoHoras=horasAcumuladoImportacion;
   float wattHoras=watsHoraImportacion;
 
-  dtostrf(wattHoras, 5, 2, buffer);
+  dtostrf(wattHoras, 6, 2, buffer);
 
   texto+=buffer;
-  texto+=" ";
+  texto+=" Watts";
 
-  dtostrf(tiempoHoras, 4, 1, buffer);
-
-  texto+=buffer;
-  texto+=" H";
   return texto;
 }
+
+String Estadisticas::getWatHoraImportadosAyer(){
+  String texto="Watts Ayer:";
+  char buffer[20];
+
+  float wattHoras=watsHoraImportacionAyer;
+
+  dtostrf(wattHoras, 6, 1, buffer);
+
+  texto+=buffer;
+
+  return texto;
+}
+
 

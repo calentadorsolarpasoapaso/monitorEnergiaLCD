@@ -116,7 +116,7 @@ void loop()
     else tInyectando=millis();
     
     //Añadimos a las estadisticas el tiempo que ha estado inyectando
-    stats.sumaWatsHoraExportacion(msLectura,realPower);
+    stats.sumaWatsHoraExportacion(msLectura,-realPower);
    }
    else{
      //Apagamos LCD
@@ -180,7 +180,12 @@ void mostrarInformacionLCD(int watios,int voltios){
   //Print imported Wats
   lcd.setCursor(0,2);
   lcd.print(stats.getWatHoraImportados());
-  
+
+  //print imported watts yesterday
+  lcd.setCursor(0,3);
+  lcd.print(stats.getWatHoraImportadosAyer());
+
+
 }
 
 void encenderLCD(){
