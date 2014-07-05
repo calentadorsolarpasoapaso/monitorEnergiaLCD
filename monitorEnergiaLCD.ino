@@ -49,7 +49,7 @@ void setup()
 //  digitalWrite(13, true); // Flash a light to show transmitting
 
   lcd.setCursor(0,3);
-  lcd.print("calentadorsolarpasoa");
+//  lcd.print("calentadorsolarpasoa");
   
 //  emon1.voltage(2, 135, 0.1);  // Voltage: input pin, calibration, phase_shift
 // ORIGINAL  emon1.voltage(2, 144, 1.7);  // Voltage: input pin, calibration, phase_shift

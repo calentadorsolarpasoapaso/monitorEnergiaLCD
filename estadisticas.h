@@ -29,15 +29,16 @@ class Estadisticas
     String getWatHoraImportados();
     String getWatHoraImportadosAyer();
     
-    
   private:
     float watsHoraImportacion;
+    float watsHoraImportacionAcumulado;
     float watsHoraImportacionAyer;
     float watsHoraExportacion;
     float horasAcumuladoImportacion;
     float horasAcumuladoExportacion;
     long msInicioReset;    
     float calcularConsumo(long ms, int watt);
+    char* deblank(char* input);
 
 };
 

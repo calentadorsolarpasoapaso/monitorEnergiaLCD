@@ -21,6 +21,7 @@
 void Estadisticas::reset(){
   watsHoraExportacion=0.00000;
   watsHoraImportacion=0.00000;
+  watsHoraImportacionAcumulado=0.00;
   watsHoraImportacionAyer=0.000;
   horasAcumuladoExportacion=0.00;
   horasAcumuladoImportacion=0.00;
@@ -56,7 +57,10 @@ void Estadisticas::sumaWatsHoraImportacion(long msImportacion, int watt)
   
   //Si los milisegundos iniciales del sistema son >24h, reseteamos
   if((millis()-msInicioReset)>86400000){
+//   if((millis()-msInicioReset)>60000){
+    watsHoraImportacionAcumulado+=watsHoraImportacion;
     watsHoraImportacionAyer=watsHoraImportacion;
+    watsHoraImportacion=0.00;
     msInicioReset=millis();
   }
 }
@@ -66,7 +70,7 @@ void Estadisticas::sumaWatsHoraImportacion(long msImportacion, int watt)
 //si tenemos por ejemplo 
 //0,04166666666 en 500 ms tendremos que: 0,04166666666*500
 String Estadisticas::getWatHoraExportados(){
-  String texto="E: ";
+  String texto="E:";
   char buffer[20];
   float tiempoHoras=horasAcumuladoExportacion; //Horas que se ha exportado
   float wattHoras=watsHoraExportacion;
@@ -84,7 +88,7 @@ String Estadisticas::getWatHoraExportados(){
 }
 
 String Estadisticas::getWatHoraImportados(){
-  String texto="I: ";
+  String texto="I:";
   char buffer[20];
 
   float tiempoHoras=horasAcumuladoImportacion;
@@ -92,23 +96,50 @@ String Estadisticas::getWatHoraImportados(){
 
   dtostrf(wattHoras, 6, 2, buffer);
 
+//  deblank(buffer);
+
   texto+=buffer;
-  texto+=" Watts";
+
+  texto+="/";
+
+  dtostrf(watsHoraImportacionAcumulado, 6, 0, buffer);
+
+//  deblank(buffer);
+
+  texto+=buffer;
+
+  texto+=" W";
 
   return texto;
 }
 
 String Estadisticas::getWatHoraImportadosAyer(){
-  String texto="Watts Ayer:";
+  String texto="Ayer:";
   char buffer[20];
 
   float wattHoras=watsHoraImportacionAyer;
 
-  dtostrf(wattHoras, 6, 1, buffer);
+  dtostrf(wattHoras, 4, 0, buffer);
+
+//  deblank(buffer);
 
   texto+=buffer;
+
+  texto+=" W";
 
   return texto;
 }
 
 
+char* Estadisticas::deblank(char* input)                                                  /* deblank accepts a char[] argument and returns a char[] */
+{
+    char *output=input;
+    for (int i = 0, j = 0; i<strlen(input); i++,j++)                        /* Evaluate each character in the input */
+    {
+        if (input[i]!=' ')                                                  /* If the character is not a space */
+            output[j]=input[i];                                             /* Copy that character to the output char[] */
+        else
+            j--;                                                            /* If it is a space then do not increment the output index (j), the next non-space will be entered at the current index */
+    }
+    return output;                                                          /* Return output char[]. Should have no spaces*/
+}
