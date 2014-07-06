@@ -28,8 +28,6 @@ class EnergyMonitor
     void currentTX(int _channel, double _ICAL);
 
     void calcVI(int crossings, int timeout,boolean sonando);
-    void calcVI(int crossings, int timeout,boolean sonando,int SUPPLYVOLTAGE);
-    
     double calcIrms(int NUMBER_OF_SAMPLES);
     void serialprint();
 
