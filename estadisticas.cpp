@@ -20,9 +20,17 @@
 
 void Estadisticas::reset(){
   watsHoraExportacion=0.00000;
-  watsHoraImportacion=0.00000;
+  watsHoraExportacion_2=0.00000;
+  watsHoraExportacion_3=0.00000;
+
   watsHoraImportacionAcumulado=0.00;
-  watsHoraImportacionAyer=0.000;
+
+  watsHoraImportacion=0.00000;
+  watsHoraImportacion_2=0.00000;
+  watsHoraImportacion_3=0.00000;
+  watsHoraImportacionAyer=0.00000;
+
+  //TODO ELIMINAR
   horasAcumuladoExportacion=0.00;
   horasAcumuladoImportacion=0.00;
   
@@ -58,9 +66,21 @@ void Estadisticas::sumaWatsHoraImportacion(long msImportacion, int watt)
   //Si los milisegundos iniciales del sistema son >24h, reseteamos
   if((millis()-msInicioReset)>86400000){
 //   if((millis()-msInicioReset)>60000){
+    watsHoraExportacion_3=watsHoraExportacion_2;
+    watsHoraExportacion_2=watsHoraExportacion;
+  
+    watsHoraImportacion_3=watsHoraImportacion_2;
+    watsHoraImportacion_2=watsHoraImportacionAyer;
+    watsHoraImportacionAyer=watsHoraImportacion;
+
     watsHoraImportacionAcumulado+=watsHoraImportacion;
     watsHoraImportacionAyer=watsHoraImportacion;
+
+    //Reseteamos los dos contadores
     watsHoraImportacion=0.00;
+    watsHoraExportacion=0.0;
+    diasCompletos++;
+
     msInicioReset=millis();
   }
 }
@@ -72,18 +92,20 @@ void Estadisticas::sumaWatsHoraImportacion(long msImportacion, int watt)
 String Estadisticas::getWatHoraExportados(){
   String texto="E:";
   char buffer[20];
-  float tiempoHoras=horasAcumuladoExportacion; //Horas que se ha exportado
-  float wattHoras=watsHoraExportacion;
+//  float tiempoHoras=horasAcumuladoExportacion; //Horas que se ha exportado
 
-  dtostrf(wattHoras, 6, 2, buffer);
-
-  texto+=buffer;
-  texto+=" ";
-
-  dtostrf(tiempoHoras, 2, 3, buffer);
+  dtostrf(watsHoraExportacion, 6, 2, buffer);
 
   texto+=buffer;
-  texto+="H";
+  texto+="/";
+
+  dtostrf(watsHoraExportacion_2, 4, 0, buffer);
+  texto+=buffer;
+  texto+="/";
+
+  dtostrf(watsHoraExportacion_3, 4, 0, buffer);
+  texto+=buffer;
+
   return texto;
 }
 
@@ -103,29 +125,29 @@ String Estadisticas::getWatHoraImportados(){
   texto+="/";
 
   dtostrf(watsHoraImportacionAcumulado, 6, 0, buffer);
-
-//  deblank(buffer);
-
   texto+=buffer;
-
-  texto+=" W";
+  texto+="W ";
+  texto+=diasCompletos;
+  texto+="D";
+  
 
   return texto;
 }
 
 String Estadisticas::getWatHoraImportadosAyer(){
-  String texto="Ayer:";
+  String texto="H:";
   char buffer[20];
 
-  float wattHoras=watsHoraImportacionAyer;
-
-  dtostrf(wattHoras, 4, 0, buffer);
-
-//  deblank(buffer);
-
+  dtostrf(watsHoraImportacionAyer, 4, 0, buffer);
   texto+=buffer;
+  texto+="/";
 
-  texto+=" W";
+  dtostrf(watsHoraImportacion_2, 4, 0, buffer);
+  texto+=buffer;
+  texto+="/";
+
+  dtostrf(watsHoraImportacion_3, 4, 0, buffer);
+  texto+=buffer;
 
   return texto;
 }

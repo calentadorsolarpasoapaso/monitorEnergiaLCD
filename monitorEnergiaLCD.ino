@@ -93,7 +93,7 @@ void loop()
 
 //  realPower=-2;  
   //Margen de watios para que no suene por la noche
-  realPower+=60;
+  realPower+=30;
   Serial.println(supplyVoltage);
   Serial.println(realPower);
   

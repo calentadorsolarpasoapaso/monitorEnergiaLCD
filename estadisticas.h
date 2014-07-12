@@ -30,10 +30,11 @@ class Estadisticas
     String getWatHoraImportadosAyer();
     
   private:
+    int diasCompletos;
     float watsHoraImportacion;
     float watsHoraImportacionAcumulado;
-    float watsHoraImportacionAyer;
-    float watsHoraExportacion;
+    float watsHoraImportacionAyer,watsHoraImportacion_2,watsHoraImportacion_3;
+    float watsHoraExportacion,watsHoraExportacion_2,watsHoraExportacion_3;
     float horasAcumuladoImportacion;
     float horasAcumuladoExportacion;
     long msInicioReset;    
