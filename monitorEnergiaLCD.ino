@@ -67,7 +67,7 @@ void setup()
 //118.1 -28
 //118.5 -7  y 1300
 //120 -7 y 1300 De mas
-    emon1.current(1, 118.2);       // valor original, ajustar con sonda sin conectar a nada.. 135 cuenta -40w aprox 140 -15 aprox 145 voltaje
+    emon1.current(1, 115.5);       // valor original, ajustar con sonda sin conectar a nada.. 135 cuenta -40w aprox 140 -15 aprox 145 voltaje
 //    emon1.current(PIN_INTENSIDAD, 200);       // Current: input pin, calibration. 149 APROX
   emon1.setPinPWMSonido(PIN_SONIDO);
 
@@ -94,6 +94,7 @@ void loop()
 //  realPower=-2;  
   //Margen de watios para que no suene por la noche
   realPower+=30;
+  
   Serial.println(supplyVoltage);
   Serial.println(realPower);
   
